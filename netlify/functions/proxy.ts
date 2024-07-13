@@ -62,14 +62,18 @@ export default async (request: Request, context: Context) => {
     url.searchParams.append(key, value);
   });
 
+  
   const headers = pickHeaders(request.headers, ["content-type", "accept-encoding", "authorization"]);
 
-  const response = await fetch(url, {
+  const body = {
     body: request.body,
     method: request.method,
-    duplex: 'half',
     headers,
-  });
+  }
+  
+  if (['HEAD', 'GET'].includes(request.method)) delete body;
+  
+  const response = await fetch(url,body);
 
   const responseHeaders = {
     ...CORS_HEADERS,
