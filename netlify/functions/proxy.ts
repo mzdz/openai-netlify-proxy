@@ -53,6 +53,7 @@ export default async (request: Request, context: Context) => {
     body: request.body,
     method: request.method,
     headers,
+    duplex: 'half',
   }
   
   if (['HEAD', 'GET'].includes(request.method)) {
