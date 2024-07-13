@@ -65,15 +65,15 @@ export default async (request: Request, context: Context) => {
   
   const headers = pickHeaders(request.headers, ["content-type", "accept-encoding", "authorization"]);
 
-  const body = {
+  const payload = {
     body: request.body,
     method: request.method,
     headers,
   }
   
-  if (['HEAD', 'GET'].includes(request.method)) delete body;
+  if (['HEAD', 'GET'].includes(request.method)) delete payload.body;
   
-  const response = await fetch(url,body);
+  const response = await fetch(url,payload);
 
   const responseHeaders = {
     ...CORS_HEADERS,
