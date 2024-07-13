@@ -72,7 +72,10 @@ export default async (request: Request, context: Context) => {
     headers,
   }
   
-  if (['HEAD', 'GET'].includes(request.method)) delete payload.body;
+  if (['HEAD', 'GET'].includes(request.method)) {
+    delete payload.body;
+    delete payload.duplex;
+  }
   
   const response = await fetch(url,payload);
 
