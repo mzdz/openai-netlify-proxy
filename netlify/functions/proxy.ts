@@ -62,7 +62,7 @@ export default async (request: Request, context: Context) => {
     url.searchParams.append(key, value);
   });
 
-  const headers = pickHeaders(request.headers, ["content-type", "accept-encoding", "Authorization"]);
+  const headers = pickHeaders(request.headers, ["content-type", "accept-encoding", "authorization"]);
 
   const response = await fetch(url, {
     body: request.body,
