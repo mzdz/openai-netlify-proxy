@@ -1,21 +1,8 @@
 import { Context } from "@netlify/edge-functions";
 
-const pickHeaders = (headers: Headers, keys: (string | RegExp)[]): Headers => {
-  const picked = new Headers();
-  for (const key of headers.keys()) {
-    if (keys.some((k) => (typeof k === "string" ? k === key : k.test(key)))) {
-      const value = headers.get(key);
-      if (typeof value === "string") {
-        picked.set(key, value);
-      }
-    }
-  }
-  return picked;
-};
-
 const CORS_HEADERS: Record<string, string> = {
   "access-control-allow-origin": "*",
-  "access-control-allow-methods": "*",
+  "access-control-allow-methods": "OPTIONS",
   "access-control-allow-headers": "*",
 };
 
@@ -27,7 +14,7 @@ export default async (request: Request, context: Context) => {
     });
   }
 
-  const { pathname, searchParams } = new URL(request.url);
+ const { pathname, searchParams } = new URL(request.url);
   if(pathname === "/") {
     let blank_html = `
 <!DOCTYPE html>
@@ -55,16 +42,13 @@ export default async (request: Request, context: Context) => {
     });
   }
 
-  const url = new URL(pathname, "https://api.openai.com");
-  searchParams.delete("_path");
+  const url = new URL(request.url);
+  const fetchAPI = request.url.replace(url.host, 'api.openai.com');
 
-  searchParams.forEach((value, key) => {
-    url.searchParams.append(key, value);
-  });
-
+  const headers = request.headers; //pickHeaders(request.headers, ["content-type", "accept-encoding", "authorization"]);
+  headers.delete("x-real-ip");
+  headers.delete("x-forwarded-for");
   
-  const headers = pickHeaders(request.headers, ["content-type", "accept-encoding", "authorization"]);
-
   const payload = {
     body: request.body,
     method: request.method,
@@ -77,16 +61,11 @@ export default async (request: Request, context: Context) => {
     delete payload.duplex;
   }
   
-  const response = await fetch(url,payload);
-
-  const responseHeaders = {
-    ...CORS_HEADERS,
-    ...Object.fromEntries(response.headers),
-    "content-encoding": null
-  };
+  const response = await fetch(fetchAPI,payload);
 
   return new Response(response.body, {
-    headers: responseHeaders,
-    status: response.status
+    status: response.status,
+    statusText: response.statusText,
+    headers: response.headers
   });
 };
