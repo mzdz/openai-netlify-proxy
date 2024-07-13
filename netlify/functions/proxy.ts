@@ -2,7 +2,7 @@ import { Context } from "@netlify/edge-functions";
 
 const CORS_HEADERS: Record<string, string> = {
   "access-control-allow-origin": "*",
-  "access-control-allow-methods": "OPTIONS",
+  "access-control-allow-methods": "*",
   "access-control-allow-headers": "*",
 };
 
@@ -58,6 +58,7 @@ export default async (request: Request, context: Context) => {
   
   if (['HEAD', 'GET'].includes(request.method)) {
     delete payload.body;
+    delete payload.duplex;
   }
   
   const response = await fetch(fetchAPI,payload);
