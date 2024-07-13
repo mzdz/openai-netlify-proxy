@@ -68,6 +68,7 @@ export default async (request: Request, context: Context) => {
   const payload = {
     body: request.body,
     method: request.method,
+    duplex: 'half',
     headers,
   }
   
