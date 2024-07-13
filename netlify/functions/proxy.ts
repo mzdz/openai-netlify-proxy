@@ -62,10 +62,16 @@ export default async (request: Request, context: Context) => {
   }
   
   const response = await fetch(fetchAPI,payload);
+  
+  const responseHeaders = {
+    ...CORS_HEADERS,
+    ...Object.fromEntries(response.headers),
+    "content-encoding": null
+  };
 
   return new Response(response.body, {
-    status: response.status,
+    headers: responseHeaders,
     statusText: response.statusText,
-    headers: response.headers
+    status: response.status
   });
 };
