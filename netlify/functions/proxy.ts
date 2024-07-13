@@ -52,13 +52,11 @@ export default async (request: Request, context: Context) => {
   const payload = {
     body: request.body,
     method: request.method,
-    duplex: 'half',
     headers,
   }
   
   if (['HEAD', 'GET'].includes(request.method)) {
     delete payload.body;
-    delete payload.duplex;
   }
   
   const response = await fetch(fetchAPI,payload);
