@@ -78,7 +78,7 @@ export default async (request: Request, context: Context) => {
   
   const responseHeaders = {
     ...CORS_HEADERS,
-    ...Object.fromEntries(pickHeaders(res.headers, ["content-type", /^x-ratelimit-/, /^openai-/])),
+    ...Object.fromEntries(pickHeaders(response.headers, ["content-type", /^x-ratelimit-/, /^openai-/])),
     "content-encoding": null
   };
 
