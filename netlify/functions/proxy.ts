@@ -45,7 +45,7 @@ export default async (request: Request, context: Context) => {
   const url = new URL(request.url);
   const fetchAPI = request.url.replace(url.host, 'api.openai.com');
 
-  const headers = request.headers; //pickHeaders(request.headers, ["content-type", "accept-encoding", "authorization"]);
+  const headers = request.headers; 
   headers.delete("x-real-ip");
   headers.delete("x-forwarded-for");
   
